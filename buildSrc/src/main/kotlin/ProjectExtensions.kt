@@ -18,24 +18,14 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.productservice
+import org.gradle.api.Project
+import java.io.File
 
-import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.matchers.shouldBe
+operator fun Project.get(name: String): String =
+    properties(name)
 
-class ProductServiceApplicationTests : AnnotationSpec() {
-    @Test
-    fun `happy day`() {
-        1 shouldBe 1
-    }
+fun Project.buildFile(name: String): File =
+    layout.buildDirectory.file(properties(name)).get().asFile
 
-    @Test
-    fun `is great`() {
-        Product().greater(2, 1) shouldBe true
-    }
-
-    @Test
-    fun `is lower`() {
-        Product().greater(1, 2) shouldBe false
-    }
-}
+private fun Project.properties(name: String): String =
+    property("project.$name") as String

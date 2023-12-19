@@ -1,0 +1,56 @@
+[versions]
+kotlin = "2.0.0-Beta1"
+quality-catalog = "0.8.1"
+quality-versions = "0.50.0"
+spring-boot = "3.2.0"
+spring-management = "1.1.4"
+test-kotest = "5.8.0"
+test-kotest-pitest = "1.2.0"
+test-pitest = "1.15.0"
+test-pitest-junit5 = "1.2.1"
+test-pitest-junit5-accelerator = "1.0.6"
+test-pitest-kotlin = "1.1.6"
+test-pitest-spring = "0.0.10"
+
+[libraries]
+spring-boot-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
+spring-dev-tools = { module = "org.springframework.boot:spring-boot-devtools" }
+test-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "test-kotest" }
+test-kotest-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "test-kotest" }
+test-kotest-pitest = { module = "io.kotest.extensions:kotest-extensions-pitest", version.ref = "test-kotest-pitest" }
+test-kotest-property = { module = "io.kotest:kotest-property", version.ref = "test-kotest" }
+test-pitest-junit5 = { module = "org.pitest:pitest-junit5-plugin", version.ref = "test-pitest-junit5" }
+test-pitest-junit5-accelerator = { module = "com.groupcdg.pitest:pitest-accelerator-junit5", version.ref = "test-pitest-junit5-accelerator" }
+test-pitest-kotlin = { module = "com.groupcdg.pitest:pitest-kotlin-plugin", version.ref = "test-pitest-kotlin" }
+test-pitest-spring = { module = "com.groupcdg.arcmutate:arcmutate-spring", version.ref = "test-pitest-spring" }
+test-spring-boot = { module = "org.springframework.boot:spring-boot-starter-test" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+quality-catalog = { id = "nl.littlerobots.version-catalog-update", version.ref = "quality-catalog" }
+quality-versions = { id = "com.github.ben-manes.versions", version.ref = "quality-versions" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-management = { id = "io.spring.dependency-management", version.ref = "spring-management" }
+test-pitest = { id = "info.solidsoft.pitest", version.ref = "test-pitest" }
+
+[bundles]
+spring-boot = [
+    "spring-boot-starter",
+]
+test-kotest = [
+    "test-kotest-assertions",
+    "test-kotest-junit5",
+    "test-kotest-pitest",
+    "test-kotest-property",
+]
+test-pitest = [
+    "test-pitest-junit5",
+    "test-pitest-junit5-accelerator",
+    "test-pitest-kotlin",
+    "test-pitest-spring",
+]
+test-spring-boot = [
+    "test-spring-boot",
+]

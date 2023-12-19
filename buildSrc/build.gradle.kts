@@ -18,24 +18,6 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.productservice
+plugins { `kotlin-dsl` }
 
-import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.matchers.shouldBe
-
-class ProductServiceApplicationTests : AnnotationSpec() {
-    @Test
-    fun `happy day`() {
-        1 shouldBe 1
-    }
-
-    @Test
-    fun `is great`() {
-        Product().greater(2, 1) shouldBe true
-    }
-
-    @Test
-    fun `is lower`() {
-        Product().greater(1, 2) shouldBe false
-    }
-}
+repositories { mavenCentral() }
