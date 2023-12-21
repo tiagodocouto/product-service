@@ -19,11 +19,11 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="[product-service] check" type="GradleRunConfiguration" factoryName="Gradle">
+    <configuration default="false" name="product-service [pitest]" type="GradleRunConfiguration" factoryName="Gradle">
         <ExternalSystemSettings>
             <option name="env">
                 <map>
-                    <entry key="SPRING_PROFILES_ACTIVE" value="local,test"/>
+                    <entry key="SPRING_PROFILES_ACTIVE" value="local,test,pitest"/>
                 </map>
             </option>
             <option name="executionName"/>
@@ -37,6 +37,8 @@
                 <list>
                     <option value=":clean"/>
                     <option value=":check"/>
+                    <option value=":arcmutateLicence"/>
+                    <option value=":pitest"/>
                 </list>
             </option>
             <option name="vmOptions"/>

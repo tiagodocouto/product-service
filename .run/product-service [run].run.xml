@@ -19,7 +19,7 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="[product-service] run" type="SpringBootApplicationConfigurationType"
+    <configuration default="false" name="product-service [run]" type="SpringBootApplicationConfigurationType"
                    factoryName="Spring Boot">
         <option name="ACTIVE_PROFILES" value="local,dev"/>
         <module name="product-service.main"/>

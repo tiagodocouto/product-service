@@ -19,42 +19,27 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="[product-service] pitest" type="PIT" factoryName="PIT Runner"
-                   REPORT_DIR="$PROJECT_DIR$/report" SOURCE_DIRS="$PROJECT_DIR$/src/main/kotlin"
-                   TARGET_CLASSES="dev.docouto.*" TARGET_TESTS="" otherParams="--outputFormats XML,HTML">
-        <module name="product-service"/>
-        <method v="2">
-            <option name="Make" enabled="true"/>
-        </method>
-    </configuration>
-    <configuration default="false" name="[product-service] pitest" type="GradleRunConfiguration" factoryName="Gradle">
+    <configuration default="false" name="product-service [catalog update]" type="GradleRunConfiguration"
+                   factoryName="Gradle">
         <ExternalSystemSettings>
-            <option name="env">
-                <map>
-                    <entry key="SPRING_PROFILES_ACTIVE" value="local,test,pitest"/>
-                </map>
-            </option>
             <option name="executionName"/>
             <option name="externalProjectPath" value="$PROJECT_DIR$"/>
             <option name="externalSystemIdString" value="GRADLE"/>
-            <option name="scriptParameters" value="--no-build-cache"/>
+            <option name="scriptParameters" value=""/>
             <option name="taskDescriptions">
                 <list/>
             </option>
             <option name="taskNames">
                 <list>
-                    <option value=":clean"/>
-                    <option value=":check"/>
-                    <option value=":arcmutateLicence"/>
-                    <option value=":pitest"/>
+                    <option value="versionCatalogUpdate"/>
                 </list>
             </option>
             <option name="vmOptions"/>
         </ExternalSystemSettings>
-        <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+        <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
         <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
         <DebugAllEnabled>false</DebugAllEnabled>
-        <RunAsTest>true</RunAsTest>
+        <RunAsTest>false</RunAsTest>
         <method v="2"/>
     </configuration>
 </component>
