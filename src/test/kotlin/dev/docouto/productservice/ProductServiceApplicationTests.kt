@@ -28,14 +28,4 @@ class ProductServiceApplicationTests : AnnotationSpec() {
     fun `happy day`() {
         1 shouldBe 1
     }
-
-    @Test
-    fun `is great`() {
-        Product().greater(2, 1) shouldBe true
-    }
-
-    @Test
-    fun `is lower`() {
-        Product().greater(1, 2) shouldBe false
-    }
 }

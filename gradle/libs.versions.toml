@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.0.0-Beta1"
+kotlin = "2.0.0-Beta2"
 quality-catalog = "0.8.1"
 quality-versions = "0.50.0"
 spring-boot = "3.2.0"
