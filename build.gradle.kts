@@ -63,33 +63,9 @@ dependencies {
     pitest(libs.bundles.test.pitest)
 }
 
-// Compiler
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-configurations {
-    compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
-}
-
-tasks.withType<KotlinCompile>()
-    .configureEach {
-        kotlinOptions {
-            jvmTarget = project["java.version"]
-            freeCompilerArgs += project["java.args"]
-        }
-    }
-
-// Test & Quality
-configurations.matching { it.name == "detekt" }.all {
-    resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
-}
-
-tasks.check {
-    dependsOn(
-        "detekt",
-    )
 }
 
 kover {
@@ -103,28 +79,50 @@ kover {
 }
 
 configure<PitestPluginExtension> {
+    mutators = listOf("ALL")
+    threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["arcmutate.group"]))
+    outputFormats = listOf("XML", "HTML", "GITCI")
 }
 
-tasks.withType<Test>()
-    .configureEach { useJUnitPlatform() }
+configurations {
+    compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
+}.matching { it.name == "detekt" }.all {
+    resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
+}
 
-tasks.withType<Detekt>()
-    .configureEach {
-        config.setFrom("$rootDir/detekt-config.yml")
-        buildUponDefaultConfig = true
-        allRules = true
-        reports {
-            xml.required.set(true)
-            html.required.set(true)
-            sarif.required.set(true)
-        }
+tasks {
+    check {
+        dependsOn("detekt")
     }
 
-// Custom Tasks
-tasks.register<Download>("arcmutateLicense") {
-    src(project["arcmutate.license"])
-    dest(project.buildFile("arcmutate.output"))
-    onlyIfModified(true)
-    overwrite(true)
+    withType<KotlinCompile>()
+        .configureEach {
+            kotlinOptions {
+                jvmTarget = project["java.version"]
+                freeCompilerArgs += project["java.args"]
+            }
+        }
+
+    withType<Test>()
+        .configureEach { useJUnitPlatform() }
+
+    withType<Detekt>()
+        .configureEach {
+            config.setFrom("$rootDir/detekt-config.yml")
+            buildUponDefaultConfig = true
+            allRules = true
+            reports {
+                xml.required.set(true)
+                html.required.set(true)
+                sarif.required.set(true)
+            }
+        }
+
+    register<Download>("arcmutateLicense") {
+        src(project["arcmutate.license"])
+        dest(project.buildFile("arcmutate.output"))
+        onlyIfModified(true)
+        overwrite(true)
+    }
 }
