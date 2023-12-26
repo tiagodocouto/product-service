@@ -11,6 +11,10 @@ on:
 jobs:
   qodana:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
       - name: 'CHECKOUT'
         uses: actions/checkout@v3
@@ -19,10 +23,6 @@ jobs:
 
       - name: 'QODANA SCAN'
         uses: JetBrains/qodana-action@v2023.3
-        with:
-          pr-mode: false
-          args: --apply-fixes
-          push-fixes: pull-request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
