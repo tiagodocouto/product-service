@@ -19,7 +19,16 @@
  */
 
 import org.gradle.api.Project
+import org.gradle.api.artifacts.DependencyResolveDetails
+import org.gradle.api.artifacts.ResolutionStrategy
 import java.io.File
+
+fun ResolutionStrategy.kotlin(block: DependencyResolveDetails.() -> Unit) {
+    eachDependency {
+        if (requested.group == "org.jetbrains.kotlin")
+            block()
+    }
+}
 
 operator fun Project.get(name: String): String =
     properties(name)

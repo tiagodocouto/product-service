@@ -18,7 +18,11 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@file:Suppress("UnstableApiUsage")
+
 import info.solidsoft.gradle.pitest.PitestPluginExtension
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.getSupportedKotlinVersion
 import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -34,13 +38,17 @@ plugins {
     // Quality
     alias(libs.plugins.quality.versions)
     alias(libs.plugins.quality.catalog)
+    alias(libs.plugins.quality.detekt)
     // spotless
-    // detekt
     // Test
+    alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.test.pitest)
 }
 
-repositories { mavenCentral() }
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
 
 dependencies {
     // Development
@@ -49,35 +57,71 @@ dependencies {
     annotationProcessor(libs.spring.boot.processor)
     // Spring
     implementation(libs.bundles.spring.boot)
-    // Test
+    // Test & Quality
     testImplementation(libs.bundles.test.spring.boot)
     testImplementation(libs.bundles.test.kotest)
     pitest(libs.bundles.test.pitest)
 }
 
+// Compiler
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
     compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
 }
 
-configure<PitestPluginExtension> {
-    targetClasses.set(listOf(project["arcmutate.group"]))
+tasks.withType<KotlinCompile>()
+    .configureEach {
+        kotlinOptions {
+            jvmTarget = project["java.version"]
+            freeCompilerArgs += project["java.args"]
+        }
+    }
+
+// Test & Quality
+configurations.matching { it.name == "detekt" }.all {
+    resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = project["java.version"]
-        freeCompilerArgs += project["java.args"]
+tasks.check {
+    dependsOn(
+        "detekt",
+    )
+}
+
+kover {
+    koverReport {
+        defaults {
+            xml { onCheck = true }
+            html { onCheck = true }
+            verify { onCheck = true }
+        }
     }
+}
+
+configure<PitestPluginExtension> {
+    targetClasses.set(listOf(project["arcmutate.group"]))
 }
 
 tasks.withType<Test>()
     .configureEach { useJUnitPlatform() }
 
+tasks.withType<Detekt>()
+    .configureEach {
+        config.setFrom("$rootDir/detekt-config.yml")
+        buildUponDefaultConfig = true
+        allRules = true
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+            sarif.required.set(true)
+        }
+    }
+
+// Custom Tasks
 tasks.register<Download>("arcmutateLicense") {
     src(project["arcmutate.license"])
     dest(project.buildFile("arcmutate.output"))

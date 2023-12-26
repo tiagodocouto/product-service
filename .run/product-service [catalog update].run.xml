@@ -31,7 +31,7 @@
             </option>
             <option name="taskNames">
                 <list>
-                    <option value="versionCatalogUpdate"/>
+                    <option value=":versionCatalogUpdate"/>
                 </list>
             </option>
             <option name="vmOptions"/>
