@@ -11,6 +11,10 @@ on:
 jobs:
   qodana:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
     steps:
       - name: 'CHECKOUT'
         uses: actions/checkout@v3
