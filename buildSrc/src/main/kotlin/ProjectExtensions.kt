@@ -36,5 +36,8 @@ operator fun Project.get(name: String): String =
 fun Project.buildFile(name: String): File =
     layout.buildDirectory.file(properties(name)).get().asFile
 
+fun Project.rootFile(name: String): File =
+    layout.projectDirectory.file(properties(name)).asFile
+
 private fun Project.properties(name: String): String =
     property("project.$name") as String

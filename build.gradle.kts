@@ -70,10 +70,16 @@ java {
 
 kover {
     koverReport {
+        filters {
+            includes {
+                classes(project["arcmutate.group"])
+            }
+        }
         defaults {
-            xml { onCheck = true }
-            html { onCheck = true }
-            verify { onCheck = true }
+            xml {
+                onCheck = false
+                setReportFile(project.rootFile("kover.output"))
+            }
         }
     }
 }
@@ -82,7 +88,7 @@ configure<PitestPluginExtension> {
     mutators = listOf("ALL")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["arcmutate.group"]))
-    outputFormats = listOf("XML", "HTML", "GITCI")
+    outputFormats = listOf("XML", "GITCI")
 }
 
 configurations {
@@ -92,8 +98,10 @@ configurations {
 }
 
 tasks {
-    check {
+    test {
+        useJUnitPlatform()
         dependsOn("detekt")
+        finalizedBy("koverXmlReport")
     }
 
     withType<KotlinCompile>()
@@ -103,9 +111,6 @@ tasks {
                 freeCompilerArgs += project["java.args"]
             }
         }
-
-    withType<Test>()
-        .configureEach { useJUnitPlatform() }
 
     withType<Detekt>()
         .configureEach {
