@@ -13,7 +13,6 @@ test-pitest-junit5 = "1.2.1"
 test-pitest-junit5-accelerator = "1.0.6"
 test-pitest-kotlin = "1.1.6"
 test-pitest-spring = "0.0.10"
-test-pitest-github = "1.0.7"
 
 [libraries]
 spring-boot-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
@@ -27,7 +26,6 @@ test-pitest-junit5 = { module = "org.pitest:pitest-junit5-plugin", version.ref =
 test-pitest-junit5-accelerator = { module = "com.groupcdg.pitest:pitest-accelerator-junit5", version.ref = "test-pitest-junit5-accelerator" }
 test-pitest-kotlin = { module = "com.groupcdg.pitest:pitest-kotlin-plugin", version.ref = "test-pitest-kotlin" }
 test-pitest-spring = { module = "com.groupcdg.arcmutate:arcmutate-spring", version.ref = "test-pitest-spring" }
-test-pitest-github = { module = "com.groupcdg.pitest.github:com.groupcdg.pitest.github.gradle.plugin", version.ref = "test-pitest-github" }
 test-spring-boot = { module = "org.springframework.boot:spring-boot-starter-test" }
 
 [plugins]
@@ -56,7 +54,6 @@ test-pitest = [
     "test-pitest-junit5-accelerator",
     "test-pitest-kotlin",
     "test-pitest-spring",
-    "test-pitest-github",
 ]
 test-spring-boot = [
     "test-spring-boot",
