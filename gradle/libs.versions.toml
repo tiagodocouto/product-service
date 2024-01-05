@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.0.0-Beta2"
+kotlin = "1.9.22"
 kotlinx-kover = "0.7.5"
 quality-catalog = "0.8.3"
 quality-detekt = "1.23.4"
@@ -9,6 +9,8 @@ spring-management = "1.1.4"
 test-kotest = "5.8.0"
 test-kotest-pitest = "1.2.0"
 test-pitest = "1.15.0"
+test-pitest-git = "1.1.4"
+test-pitest-github = "1.0.7"
 test-pitest-junit5 = "1.2.1"
 test-pitest-junit5-accelerator = "1.0.6"
 test-pitest-kotlin = "1.1.6"
@@ -22,6 +24,7 @@ test-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.
 test-kotest-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "test-kotest" }
 test-kotest-pitest = { module = "io.kotest.extensions:kotest-extensions-pitest", version.ref = "test-kotest-pitest" }
 test-kotest-property = { module = "io.kotest:kotest-property", version.ref = "test-kotest" }
+test-pitest-git = { module = "com.groupcdg:pitest-git-plugin", version.ref = "test-pitest-git" }
 test-pitest-junit5 = { module = "org.pitest:pitest-junit5-plugin", version.ref = "test-pitest-junit5" }
 test-pitest-junit5-accelerator = { module = "com.groupcdg.pitest:pitest-accelerator-junit5", version.ref = "test-pitest-junit5-accelerator" }
 test-pitest-kotlin = { module = "com.groupcdg.pitest:pitest-kotlin-plugin", version.ref = "test-pitest-kotlin" }
@@ -38,6 +41,7 @@ quality-versions = { id = "com.github.ben-manes.versions", version.ref = "qualit
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-management = { id = "io.spring.dependency-management", version.ref = "spring-management" }
 test-pitest = { id = "info.solidsoft.pitest", version.ref = "test-pitest" }
+test-pitest-github = { id = "com.groupcdg.pitest.github", version.ref = "test-pitest-github" }
 
 [bundles]
 spring-boot = [
@@ -50,6 +54,7 @@ test-kotest = [
     "test-kotest-property",
 ]
 test-pitest = [
+    "test-pitest-git",
     "test-pitest-junit5",
     "test-pitest-junit5-accelerator",
     "test-pitest-kotlin",

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Tiago do Couto.
+ * Copyright (c) 2023-2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,6 +20,7 @@
 
 @file:Suppress("UnstableApiUsage")
 
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import info.solidsoft.gradle.pitest.PitestPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.getSupportedKotlinVersion
@@ -43,6 +44,7 @@ plugins {
     // Test
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.test.pitest)
+    alias(libs.plugins.test.pitest.github)
 }
 
 repositories {
@@ -86,9 +88,11 @@ kover {
 
 configure<PitestPluginExtension> {
     mutators = listOf("ALL")
+    features = listOf("+GIT(from[HEAD~1])")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["arcmutate.group"]))
     outputFormats = listOf("XML", "GITCI")
+    failWhenNoMutations = false
 }
 
 configurations {
@@ -122,6 +126,11 @@ tasks {
                 html.required.set(true)
                 sarif.required.set(true)
             }
+        }
+
+    withType<DependencyUpdatesTask>()
+        .configureEach {
+            rejectVersionIf { candidate.version.isStable().not() }
         }
 
     register<Download>("arcmutateLicense") {

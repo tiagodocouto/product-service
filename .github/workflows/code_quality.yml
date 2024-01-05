@@ -8,13 +8,13 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  SETUP:
-    strategy:
-      matrix:
-        os: [ "ubuntu-latest" ]
-        jdk: [ "17" ]
-    runs-on: ${{ matrix.os }}
+  BUILD_TEST:
+    name: "BUILD & TEST"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 30
     permissions:
+      actions: read
+      contents: read
       pull-requests: write
       security-events: write
     steps:
@@ -23,70 +23,55 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "> SETUP JDK ${{ matrix.jdk }} ☕️"
+      - name: "> INITIALIZE CODEQL 🤖"
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "java-kotlin"
+          tools: "latest"
+
+      - name: "> SETUP JDK 17 ☕️"
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: ${{ matrix.jdk }}
+          java-version: "17"
 
       - name: "> SETUP GRADLE 📦"
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          arguments: build --scan -x check
 
-      - name: "> BUILD 🏗"
-        run: ./gradlew build
-
-      - name: "> RUN TESTS 🧪"
-        run: ./gradlew check
+      - name: "> > RUN TESTS 🧪"
+        uses: gradle/gradle-build-action@v2.4.2
+        with:
+          arguments: check
 
       - name: "> > RUN MUTATION TESTS 🧬"
-        run: ./gradlew arcmutateLicense pitest
-  
-  #      - name: "> QODANA SCAN 🧙🏻"
-  #        uses: JetBrains/qodana-action@v2023.3
-  #        with:
-  #          pr-mode: false
-  #          cache-default-branch-only: true
-  #        env:
-  #          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-  #
-  #      - name: "> ARCHIVE CODE COVERAGE RESULTS 📦"
-  #        uses: actions/upload-artifact@v2
-  #        with:
-  #          name: code-coverage.zip
-  #          path: .qodana/code-coverage
-  #
-  #      - name: "> UPLOAD QODANA RESULTS 📤"
-  #        uses: github/codeql-action/upload-sarif@v2
-  #        with:
-  #          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
-
-  ANALYSE:
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ "java" ]
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - name: "> CHECKOUT ⤵️"
-        uses: actions/checkout@v4
+        uses: gradle/gradle-build-action@v2.4.2
         with:
-          fetch-depth: 0
+          arguments: arcmutateLicense pitest
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "> > CHECKOUT HEAD OF PULL REQUEST ⤵️"
-        run: git checkout HEAD^2
-        if: ${{ github.event_name == 'pull_request' }}
-
-      - name: "> INITIALIZE CODEQL 🤖"
-        uses: github/codeql-action/init@v2
+      - name: "> > RUN CODEQL ANALYSIS 🕵🏻"
+        uses: github/codeql-action/analyze@v3
         with:
-          languages: ${{ matrix.language }}
+          category: "/language:java-kotlin"
 
-      - name: "> > AUTOMATICALLY BUILD CODEQL ♻️"
-        uses: github/codeql-action/autobuild@v2
-
-      - name: "> > RUN CODEQL ANALYSIS 🧬"
-        uses: github/codeql-action/analyze@v2
+#      - name: "> QODANA SCAN 🧙🏻"
+#        uses: JetBrains/qodana-action@v2023.3
+#        with:
+#          pr-mode: false
+#          cache-default-branch-only: true
+#        env:
+#          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+#
+#      - name: "> > UPLOAD QODANA RESULTS 📤"
+#        uses: github/codeql-action/upload-sarif@v2
+#        with:
+#          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
+#
+#      - name: "> > ARCHIVE CODE COVERAGE RESULTS 📦"
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: code-coverage.zip
+#          path: .qodana/code-coverage
