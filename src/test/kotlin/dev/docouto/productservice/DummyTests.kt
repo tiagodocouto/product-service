@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Tiago do Couto.
+ * Copyright (c) 2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,36 +18,19 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import org.gradle.api.Project
-import org.gradle.api.artifacts.DependencyResolveDetails
-import org.gradle.api.artifacts.ResolutionStrategy
-import java.io.File
+package dev.docouto.productservice
 
-private val stableKeywords = listOf("RELEASE", "FINAL", "GA")
-private val stableRegex = "^[0-9,.v-]+(-r)?$".toRegex()
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.shouldBe
 
-fun String.isStable(): Boolean =
-    stableKeywords.any { this.uppercase().contains(it) }
-            || stableRegex.matches(this)
+class DummyTests : AnnotationSpec() {
+    @Test
+    fun `is odd`() {
+        Dummy.isOddOrEven(1) shouldBe "odd"
+    }
 
-fun ResolutionStrategy.kotlin(block: DependencyResolveDetails.() -> Unit) {
-    eachDependency {
-        if (requested.group == "org.jetbrains.kotlin")
-            block()
+    @Test
+    fun `is even`() {
+        Dummy.isOddOrEven(2) shouldBe "even"
     }
 }
-
-operator fun Project.get(name: String): String =
-    properties(name)
-
-fun String.array(): Array<String> =
-    split(",").toTypedArray()
-
-fun Project.buildFile(name: String): File =
-    layout.buildDirectory.file(properties(name)).get().asFile
-
-fun Project.rootFile(name: String): File =
-    layout.projectDirectory.file(properties(name)).asFile
-
-private fun Project.properties(name: String): String =
-    property("project.$name") as String

@@ -22,6 +22,7 @@
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import info.solidsoft.gradle.pitest.PitestPluginExtension
+import info.solidsoft.gradle.pitest.PitestTask
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.getSupportedKotlinVersion
 import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
@@ -73,24 +74,20 @@ java {
 kover {
     koverReport {
         filters {
-            includes {
-                classes(project["arcmutate.group"])
-            }
+            includes { classes(project["base.package"]) }
+            excludes { project["kover.exclude"].array().map { classes(it) } }
         }
         defaults {
-            xml {
-                onCheck = false
-                setReportFile(project.rootFile("kover.output"))
-            }
+            xml { setReportFile(project.rootFile("kover.output")) }
         }
     }
 }
 
 configure<PitestPluginExtension> {
-    mutators = listOf("ALL")
-    features = listOf("+GIT(from[HEAD~1])")
+    mutators = listOf("STRONGER")
+    features = listOf("+GIT(from[HEAD~1])", "+gitci")
     threads = Runtime.getRuntime().availableProcessors()
-    targetClasses.set(listOf(project["arcmutate.group"]))
+    targetClasses.set(listOf(project["base.package"]))
     outputFormats = listOf("XML", "GITCI")
     failWhenNoMutations = false
 }
@@ -104,7 +101,10 @@ configurations {
 tasks {
     test {
         useJUnitPlatform()
-        dependsOn("detekt")
+        dependsOn(
+            "detekt",
+            "pitest"
+        )
         finalizedBy("koverXmlReport")
     }
 
@@ -118,20 +118,19 @@ tasks {
 
     withType<Detekt>()
         .configureEach {
-            config.setFrom("$rootDir/detekt-config.yml")
-            buildUponDefaultConfig = true
             allRules = true
-            reports {
-                xml.required.set(true)
-                html.required.set(true)
-                sarif.required.set(true)
-            }
+            buildUponDefaultConfig = true
+            config.setFrom("$rootDir/detekt-config.yml")
+            reports { sarif.required.set(true) }
         }
 
     withType<DependencyUpdatesTask>()
         .configureEach {
             rejectVersionIf { candidate.version.isStable().not() }
         }
+
+    withType<PitestTask>()
+        .configureEach { dependsOn("arcmutateLicense") }
 
     register<Download>("arcmutateLicense") {
         src(project["arcmutate.license"])

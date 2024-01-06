@@ -1,9 +1,9 @@
-name: CODE QUALITY
+name: CODE QUALITY 🧪
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, develop ]
+  #  push:
+  #    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
 
@@ -12,11 +12,7 @@ jobs:
     name: "BUILD & TEST"
     runs-on: "ubuntu-latest"
     timeout-minutes: 30
-    permissions:
-      actions: read
-      contents: read
-      pull-requests: write
-      security-events: write
+    permissions: write-all
     steps:
       - name: "> CHECKOUT ⤵️"
         uses: actions/checkout@v4
@@ -47,31 +43,49 @@ jobs:
 
       - name: "> > RUN MUTATION TESTS 🧬"
         uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: arcmutateLicense pitest
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: pitest
+
+      - name: "> > > UPLOAD MUTATION TESTS RESULTS 📤"
+        uses: gradle/gradle-build-action@v2.4.2
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: pitest-github
 
       - name: "> > RUN CODEQL ANALYSIS 🕵🏻"
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java-kotlin"
 
-#      - name: "> QODANA SCAN 🧙🏻"
-#        uses: JetBrains/qodana-action@v2023.3
-#        with:
-#          pr-mode: false
-#          cache-default-branch-only: true
-#        env:
-#          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-#
-#      - name: "> > UPLOAD QODANA RESULTS 📤"
-#        uses: github/codeql-action/upload-sarif@v2
-#        with:
-#          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
-#
-#      - name: "> > ARCHIVE CODE COVERAGE RESULTS 📦"
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: code-coverage.zip
-#          path: .qodana/code-coverage
+      - name: "> QODANA SCAN 🧙🏻"
+        uses: JetBrains/qodana-action@v2023.3
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        with:
+          pr-mode: false
+          cache-default-branch-only: true
+
+      - name: "> > UPLOAD QODANA RESULTS 📤"
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
+
+      - name: "> > UPLOAD DETEKT RESULTS 📤"
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: build/reports/detekt/detekt.sarif
+
+      - name: "> > ARCHIVE CODE COVERAGE RESULTS 📦"
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: code-coverage.zip
+          path: |
+            .qodana/code-coverage
+            build/reports/
