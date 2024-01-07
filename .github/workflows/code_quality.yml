@@ -14,8 +14,9 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     steps:
-      - name: "> LABELER 🏷️"
+      - name: "LABELER 🏷️"
         uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -26,41 +27,49 @@ jobs:
     timeout-minutes: 30
     permissions: write-all
     steps:
-      - name: "> CHECKOUT ⤵️"
+      - name: "CHECKOUT ⤵️"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: "> INITIALIZE CODEQL 🤖"
+      - name: "INITIALIZE CODEQL 🤖"
         uses: github/codeql-action/init@v3
         with:
           languages: "java-kotlin"
           tools: "latest"
 
-      - name: "> SETUP JDK 17 ☕️"
+      - name: "SETUP JDK 17 ☕️"
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
 
-      - name: "> SETUP GRADLE 📦"
+      - name: "SETUP GRADLE 📦"
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: build --scan -x check
 
-      - name: "> > RUN TESTS 🧪"
+      - name: "RUN TESTS 🧪"
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: check
 
-      - name: "> > RUN MUTATION TESTS 🧬"
+      - name: "RUN MUTATION TESTS 🧬"
         uses: gradle/gradle-build-action@v2.4.2
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           arguments: pitest
 
-      - name: "> > > UPLOAD MUTATION TESTS RESULTS 📤"
+      - name: "RUN SONAR SCAN 🕵🏻"
+        uses: gradle/gradle-build-action@v2.4.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          arguments: sonar
+
+      - name: "UPLOAD MUTATION TESTS RESULTS 📤"
         uses: gradle/gradle-build-action@v2.4.2
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:
@@ -68,12 +77,12 @@ jobs:
         with:
           arguments: pitest-github
 
-      - name: "> > RUN CODEQL ANALYSIS 🕵🏻"
+      - name: "RUN CODEQL ANALYSIS 🕵🏻"
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java-kotlin"
 
-      - name: "> QODANA SCAN 🧙🏻"
+      - name: "QODANA SCAN 🧙🏻"
         uses: JetBrains/qodana-action@v2023.3
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
@@ -81,23 +90,39 @@ jobs:
           pr-mode: false
           cache-default-branch-only: true
 
-      - name: "> > UPLOAD QODANA RESULTS 📤"
+      - name: "UPLOAD QODANA RESULTS 📤"
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
           sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
 
-      - name: "> > UPLOAD DETEKT RESULTS 📤"
+      - name: "UPLOAD DETEKT RESULTS 📤"
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/detekt.sarif
 
-      - name: "> > ARCHIVE CODE COVERAGE RESULTS 📦"
+      - name: "UPLOAD CODECOV RESULTS 📤"
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          file: ${{ github.workspace }}/.qodana/code-coverage/result.xml
+
+      - name: "UPLOAD CODECLIMATE RESULTS 📤"
+        uses: paambaati/codeclimate-action@v5.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          JACOCO_SOURCE_PATH: "${{ github.workspace }}/src/main/kotlin"
+        with:
+          coverageLocations: ${{ github.workspace }}/.qodana/code-coverage/result.xml:jacoco
+
+      - name: "ARCHIVE REPORTS 📦"
         uses: actions/upload-artifact@v2
         if: success() || failure()
         with:
-          name: code-coverage.zip
+          name: reports.zip
           path: |
+            ${{ runner.temp }}/qodana/results/qodana.sarif.json
             ${{ github.workspace }}/.qodana/code-coverage
             ${{ github.workspace }}/build/reports/

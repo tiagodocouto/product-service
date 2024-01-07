@@ -42,6 +42,7 @@ plugins {
     alias(libs.plugins.quality.catalog)
     alias(libs.plugins.quality.detekt)
     alias(libs.plugins.quality.spotless)
+    alias(libs.plugins.quality.sonarqube)
     // Test
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.test.pitest)
@@ -152,7 +153,7 @@ tasks {
         .configureEach {
             allRules = true
             buildUponDefaultConfig = true
-            config.setFrom("$rootDir/detekt-config.yml")
+            config.setFrom("$rootDir/detekt.yml")
             reports { sarif.required.set(true) }
         }
 
