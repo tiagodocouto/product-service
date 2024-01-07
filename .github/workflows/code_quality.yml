@@ -8,8 +8,20 @@ on:
     branches: [ main, develop ]
 
 jobs:
+  LABELER:
+    name: "LABELER 🏷️"
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: "> LABELER 🏷️"
+        uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
   BUILD_TEST:
-    name: "BUILD & TEST"
+    name: "BUILD & TEST 🏗️"
     runs-on: "ubuntu-latest"
     timeout-minutes: 30
     permissions: write-all
@@ -79,7 +91,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
-          sarif_file: build/reports/detekt/detekt.sarif
+          sarif_file: ${{ github.workspace }}/build/reports/detekt/detekt.sarif
 
       - name: "> > ARCHIVE CODE COVERAGE RESULTS 📦"
         uses: actions/upload-artifact@v2
@@ -87,5 +99,5 @@ jobs:
         with:
           name: code-coverage.zip
           path: |
-            .qodana/code-coverage
-            build/reports/
+            ${{ github.workspace }}/.qodana/code-coverage
+            ${{ github.workspace }}/build/reports/

@@ -20,8 +20,20 @@
 
 package dev.docouto.productservice
 
+/**
+ * Just a stub class for testing
+ */
 object Dummy {
-    fun isOddOrEven(n: Int) =
-        if (n % 2 == 0) "even"
-        else "odd"
+    /**
+     * Determines if the given number is odd or even.
+     *
+     * @param number the number to be checked
+     * @return "even" if the number is even, "odd" if the number is odd
+     */
+    fun isOddOrEven(number: Int) =
+        if (number % 2 == 0) {
+            "even"
+        } else {
+            "odd"
+        }
 }

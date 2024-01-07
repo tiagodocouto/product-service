@@ -1,0 +1,29 @@
+'@main':
+  - 'src/main/kotlin/*'
+  - 'src/main/kotlin/**/*'
+
+'@test':
+  - 'src/test/kotlin/*'
+  - 'src/test/kotlin/**/*'
+
+'@doc':
+  - '*.md'
+  - '**/*.md'
+  - 'docs/*'
+  - 'docs/**/*'
+
+'@ci':
+  - '.whitesource'
+  - 'renovate.json'
+  - 'qodana.yaml'
+  - 'codecov.yml'
+  - 'detekt-config.yml'
+  - 'diktat-analysis.yml'
+  - '.github/*'
+  - '.github/**/*'
+
+'@deps':
+  - '*.kts'
+  - '**/*.kts'
+  - 'gradle/*'
+  - 'gradle/**/*'

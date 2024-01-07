@@ -3,6 +3,7 @@ kotlin = "1.9.22"
 kotlinx-kover = "0.7.5"
 quality-catalog = "0.8.3"
 quality-detekt = "1.23.4"
+quality-spotless = "6.23.3"
 quality-versions = "0.50.0"
 spring-boot = "3.2.1"
 spring-management = "1.1.4"
@@ -17,6 +18,18 @@ test-pitest-kotlin = "1.1.6"
 test-pitest-spring = "0.0.10"
 
 [libraries]
+quality-detekt-plugin-complexity = { module = "io.gitlab.arturbosch.detekt:detekt-rules-complexity", version.ref = "quality-detekt" }
+quality-detekt-plugin-coroutines = { module = "io.gitlab.arturbosch.detekt:detekt-rules-coroutines", version.ref = "quality-detekt" }
+quality-detekt-plugin-documentation = { module = "io.gitlab.arturbosch.detekt:detekt-rules-documentation", version.ref = "quality-detekt" }
+quality-detekt-plugin-empty = { module = "io.gitlab.arturbosch.detekt:detekt-rules-empty", version.ref = "quality-detekt" }
+quality-detekt-plugin-errorprone = { module = "io.gitlab.arturbosch.detekt:detekt-rules-errorprone", version.ref = "quality-detekt" }
+quality-detekt-plugin-exceptions = { module = "io.gitlab.arturbosch.detekt:detekt-rules-exceptions", version.ref = "quality-detekt" }
+quality-detekt-plugin-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "quality-detekt" }
+quality-detekt-plugin-naming = { module = "io.gitlab.arturbosch.detekt:detekt-rules-naming", version.ref = "quality-detekt" }
+quality-detekt-plugin-performance = { module = "io.gitlab.arturbosch.detekt:detekt-rules-performance", version.ref = "quality-detekt" }
+quality-detekt-plugin-ruleauthors = { module = "io.gitlab.arturbosch.detekt:detekt-rules-ruleauthors", version.ref = "quality-detekt" }
+quality-detekt-plugin-rules = { module = "io.gitlab.arturbosch.detekt:detekt-rules", version.ref = "quality-detekt" }
+quality-detekt-plugin-style = { module = "io.gitlab.arturbosch.detekt:detekt-rules-style", version.ref = "quality-detekt" }
 spring-boot-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
 spring-dev-tools = { module = "org.springframework.boot:spring-boot-devtools" }
@@ -37,6 +50,7 @@ kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotl
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover" }
 quality-catalog = { id = "nl.littlerobots.version-catalog-update", version.ref = "quality-catalog" }
 quality-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "quality-detekt" }
+quality-spotless = { id = "com.diffplug.spotless", version.ref = "quality-spotless" }
 quality-versions = { id = "com.github.ben-manes.versions", version.ref = "quality-versions" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-management = { id = "io.spring.dependency-management", version.ref = "spring-management" }
@@ -44,6 +58,20 @@ test-pitest = { id = "info.solidsoft.pitest", version.ref = "test-pitest" }
 test-pitest-github = { id = "com.groupcdg.pitest.github", version.ref = "test-pitest-github" }
 
 [bundles]
+quality-deteket = [
+    "quality-detekt-plugin-complexity",
+    "quality-detekt-plugin-coroutines",
+    "quality-detekt-plugin-documentation",
+    "quality-detekt-plugin-empty",
+    "quality-detekt-plugin-errorprone",
+    "quality-detekt-plugin-exceptions",
+    "quality-detekt-plugin-formatting",
+    "quality-detekt-plugin-naming",
+    "quality-detekt-plugin-performance",
+    "quality-detekt-plugin-ruleauthors",
+    "quality-detekt-plugin-rules",
+    "quality-detekt-plugin-style",
+]
 spring-boot = [
     "spring-boot-starter",
 ]

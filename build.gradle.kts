@@ -33,15 +33,15 @@ plugins {
     idea
     // Kotlin
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.spring)
     // Spring
+    alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.management)
     // Quality
     alias(libs.plugins.quality.versions)
     alias(libs.plugins.quality.catalog)
     alias(libs.plugins.quality.detekt)
-    // spotless
+    alias(libs.plugins.quality.spotless)
     // Test
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.test.pitest)
@@ -63,6 +63,7 @@ dependencies {
     // Test & Quality
     testImplementation(libs.bundles.test.spring.boot)
     testImplementation(libs.bundles.test.kotest)
+    detektPlugins(libs.bundles.quality.deteket)
     pitest(libs.bundles.test.pitest)
 }
 
@@ -83,6 +84,28 @@ kover {
     }
 }
 
+spotless {
+    kotlin {
+        target("src/main/**/*.kt")
+        ktfmt()
+        ktlint()
+        diktat().configFile("diktat-analysis.yml")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+        diktat().configFile("diktat-analysis.yml")
+    }
+    format("misc") {
+        target("*.md", "*.yml", "*.properties", ".gitignore")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
 configure<PitestPluginExtension> {
     mutators = listOf("STRONGER")
     features = listOf("+GIT(from[HEAD~1])", "+gitci")
@@ -93,19 +116,28 @@ configure<PitestPluginExtension> {
 }
 
 configurations {
+    developmentOnly
+    runtimeClasspath { extendsFrom(configurations.developmentOnly.get()) }
     compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
 }.matching { it.name == "detekt" }.all {
     resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
 }
 
 tasks {
-    test {
-        useJUnitPlatform()
+    test { useJUnitPlatform() }
+
+    check {
         dependsOn(
-            "detekt",
-            "pitest"
+            clean,
+            detekt,
+            spotlessApply,
+            pitest,
+            test,
         )
-        finalizedBy("koverXmlReport")
+        finalizedBy(
+            koverXmlReport,
+            dependencyUpdates,
+        )
     }
 
     withType<KotlinCompile>()
