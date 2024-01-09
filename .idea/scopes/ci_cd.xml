@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="ci/cd" pattern="file[product-service]:.github//*.yml" />
+</component>

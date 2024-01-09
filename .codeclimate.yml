@@ -1,0 +1,9 @@
+version: "2"
+exclude_patterns:
+  - ".git/"
+  - ".idea/"
+  - ".qodana/"
+  - "**/.gradle/"
+  - "**/.kotlin/"
+  - "**/build/"
+  - "**/out/"

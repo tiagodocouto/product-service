@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="configs" pattern="(file[product-service]:*.yaml||file[product-service]:*.yml||file[product-service]:*.json)&amp;&amp;!file[product-service]:.github//*" />
+</component>
