@@ -1,6 +1,7 @@
 # Product Service
 
-[![QODANA](https://github.com/tiagodocouto/product-service/actions/workflows/code_quality.yml/badge.svg)](https://github.com/tiagodocouto/product-service/actions/workflows/code_quality.yml)
+[![QUALITY CHECKS 🧪](https://github.com/tiagodocouto/product-service/actions/workflows/quality_checks.yml/badge.svg)](https://github.com/tiagodocouto/product-service/actions/workflows/quality_checks.yml)
+[![GIT GUARDIAN 🔒](https://github.com/tiagodocouto/product-service/actions/workflows/git_guardian.yml/badge.svg)](https://github.com/tiagodocouto/product-service/actions/workflows/git_guardian.yml)
 [![License](https://img.shields.io/github/license/tiagodocouto/product-service)](https://github.com/tiagodocouto/product-service)
 [![Kotlin](https://img.shields.io/github/languages/top/tiagodocouto/product-service)](https://kotlinlang.org/)
 
