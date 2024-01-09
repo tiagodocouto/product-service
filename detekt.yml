@@ -1,3 +1,10 @@
+formatting:
+  MaximumLineLength:
+    active: true
+    maxLineLength: 240
+  MultiLineIfElse:
+    active: false
+
 processors:
   active: true
   exclude:

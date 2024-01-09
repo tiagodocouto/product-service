@@ -18,15 +18,22 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-rootProject.name = "product-service"
+package dev.docouto.helpers.extension
 
-plugins {
-    id("com.gradle.enterprise") version "3.16.1"
-}
-
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+/**
+ * [ListExtensions]
+ * Some helper extensions for [List]
+ */
+object ListExtensions {
+    /**
+     * [List.isEmpty]
+     * Executes [block] if [List] is empty
+     *
+     * @param block the function to be executed if [List] is `empty` or `null`
+     */
+    fun List<*>?.isMissing(block: () -> Unit) {
+        if (this == null || isEmpty()) {
+            block()
+        }
     }
 }

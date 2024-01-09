@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Tiago do Couto.
+ * Copyright (c) 2023-2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -23,9 +23,15 @@ package dev.docouto.productservice
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
+/**
+ * The `ProductServiceApplication` class is the entry point for the application.
+ */
 @SpringBootApplication
 class ProductServiceApplication
 
+/**
+ * The main method is the entry point for the application.
+ */
 fun main() {
     runApplication<ProductServiceApplication>()
 }

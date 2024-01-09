@@ -1,0 +1,17 @@
+name: "LABELER 🏷️"
+
+on:
+  pull_request:
+
+jobs:
+  LABELER:
+    name: "LABELER 🏷️"
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: "LABELER 🏷️"
+        uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"

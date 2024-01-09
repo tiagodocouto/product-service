@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Tiago do Couto.
+ * Copyright (c) 2023-2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,7 +20,9 @@
 
 @file:Suppress("UnstableApiUsage")
 
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import info.solidsoft.gradle.pitest.PitestPluginExtension
+import info.solidsoft.gradle.pitest.PitestTask
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.getSupportedKotlinVersion
 import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
@@ -31,18 +33,20 @@ plugins {
     idea
     // Kotlin
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.spring)
     // Spring
+    alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.management)
     // Quality
     alias(libs.plugins.quality.versions)
     alias(libs.plugins.quality.catalog)
     alias(libs.plugins.quality.detekt)
-    // spotless
+    alias(libs.plugins.quality.spotless)
+    alias(libs.plugins.quality.sonarqube)
     // Test
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.test.pitest)
+    alias(libs.plugins.test.pitest.github)
 }
 
 repositories {
@@ -53,13 +57,20 @@ repositories {
 dependencies {
     // Development
     developmentOnly(libs.spring.dev.tools)
+
     // Annotations Processors
     annotationProcessor(libs.spring.boot.processor)
+
     // Spring
     implementation(libs.bundles.spring.boot)
-    // Test & Quality
+
+    // Test
     testImplementation(libs.bundles.test.spring.boot)
+    testImplementation(libs.bundles.test.archunit)
     testImplementation(libs.bundles.test.kotest)
+
+    // Quality
+    detektPlugins(libs.bundles.quality.deteket)
     pitest(libs.bundles.test.pitest)
 }
 
@@ -70,30 +81,76 @@ java {
 
 kover {
     koverReport {
+        filters {
+            includes { project["base.package"](::classes) }
+            excludes { project["kover.exclude"](::classes) }
+        }
         defaults {
-            xml { onCheck = true }
-            html { onCheck = true }
-            verify { onCheck = true }
+            xml { setReportFile(project.rootFile("kover.output")) }
         }
     }
 }
 
+sonar {
+    properties {
+        project.all("sonar", ::property)
+    }
+}
+
+spotless {
+    kotlin {
+        target("src/main/**/*.kt")
+        ktfmt()
+        ktlint()
+        diktat().configFile("diktat-analysis.yml")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+        diktat().configFile("diktat-analysis.yml")
+    }
+    format("misc") {
+        target("*.md", "*.yml", "*.properties", ".gitignore")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
 configure<PitestPluginExtension> {
-    mutators = listOf("ALL")
+    mutators = listOf("STRONGER")
+    features = listOf("+GIT(from[HEAD~1])", "+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
-    targetClasses.set(listOf(project["arcmutate.group"]))
-    outputFormats = listOf("XML", "HTML", "GITCI")
+    targetClasses.set(listOf(project["base.package"]))
+    outputFormats = listOf("XML", "GITCI")
+    failWhenNoMutations = false
+    pitestGithub { deleteOldSummaries = true }
 }
 
 configurations {
+    developmentOnly
+    runtimeClasspath { extendsFrom(configurations.developmentOnly.get()) }
     compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
 }.matching { it.name == "detekt" }.all {
     resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
 }
 
 tasks {
+    test { useJUnitPlatform() }
+
     check {
-        dependsOn("detekt")
+        dependsOn(
+            clean,
+            detekt,
+            spotlessApply,
+            test,
+        )
+        finalizedBy(
+            koverXmlReport,
+            dependencyUpdates,
+        )
     }
 
     withType<KotlinCompile>()
@@ -104,20 +161,21 @@ tasks {
             }
         }
 
-    withType<Test>()
-        .configureEach { useJUnitPlatform() }
-
     withType<Detekt>()
         .configureEach {
-            config.setFrom("$rootDir/detekt-config.yml")
-            buildUponDefaultConfig = true
             allRules = true
-            reports {
-                xml.required.set(true)
-                html.required.set(true)
-                sarif.required.set(true)
-            }
+            buildUponDefaultConfig = true
+            config.setFrom("$rootDir/detekt.yml")
+            reports { sarif.required.set(true) }
         }
+
+    withType<DependencyUpdatesTask>()
+        .configureEach {
+            rejectVersionIf { candidate.version.isStable().not() }
+        }
+
+    withType<PitestTask>()
+        .configureEach { dependsOn("arcmutateLicense") }
 
     register<Download>("arcmutateLicense") {
         src(project["arcmutate.license"])

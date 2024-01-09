@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Tiago do Couto.
+ * Copyright (c) 2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,15 +18,19 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-rootProject.name = "product-service"
+package dev.docouto.productservice
 
-plugins {
-    id("com.gradle.enterprise") version "3.16.1"
-}
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.shouldBe
 
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+class DummyTests : AnnotationSpec() {
+    @Test
+    fun `is odd`() {
+        Dummy.isOddOrEven(1) shouldBe "odd"
+    }
+
+    @Test
+    fun `is even`() {
+        Dummy.isOddOrEven(2) shouldBe "even"
     }
 }

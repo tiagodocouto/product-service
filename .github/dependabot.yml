@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    registries: [ "*" ]
+    labels: [ "version update" ]
+    open-pull-requests-limit: 10

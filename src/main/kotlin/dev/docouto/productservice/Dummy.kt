@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Tiago do Couto.
+ * Copyright (c) 2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,15 +18,22 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-rootProject.name = "product-service"
+package dev.docouto.productservice
 
-plugins {
-    id("com.gradle.enterprise") version "3.16.1"
-}
-
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-    }
+/**
+ * Just a stub class for testing
+ */
+object Dummy {
+    /**
+     * Determines if the given number is odd or even.
+     *
+     * @param number the number to be checked
+     * @return "even" if the number is even, "odd" if the number is odd
+     */
+    fun isOddOrEven(number: Int) =
+        if (number % 2 == 0) {
+            "even"
+        } else {
+            "odd"
+        }
 }

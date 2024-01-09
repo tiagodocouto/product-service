@@ -1,0 +1,16 @@
+name: "PURGE 🫧"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  CLEAR_CACHE:
+    name: "CLEAR CACHE 🧹"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: MyAlbum/purge-cache@v2
+        with:
+          accessed: true
+          max-age: 86400
