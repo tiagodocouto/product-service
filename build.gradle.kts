@@ -57,13 +57,19 @@ repositories {
 dependencies {
     // Development
     developmentOnly(libs.spring.dev.tools)
+
     // Annotations Processors
     annotationProcessor(libs.spring.boot.processor)
+
     // Spring
     implementation(libs.bundles.spring.boot)
-    // Test & Quality
+
+    // Test
     testImplementation(libs.bundles.test.spring.boot)
+    testImplementation(libs.bundles.test.archunit)
     testImplementation(libs.bundles.test.kotest)
+
+    // Quality
     detektPlugins(libs.bundles.quality.deteket)
     pitest(libs.bundles.test.pitest)
 }
@@ -76,12 +82,18 @@ java {
 kover {
     koverReport {
         filters {
-            includes { classes(project["base.package"]) }
-            excludes { project["kover.exclude"].array().map { classes(it) } }
+            includes { project["base.package"](::classes) }
+            excludes { project["kover.exclude"](::classes) }
         }
         defaults {
             xml { setReportFile(project.rootFile("kover.output")) }
         }
+    }
+}
+
+sonar {
+    properties {
+        project.all("sonar", ::property)
     }
 }
 
@@ -109,11 +121,12 @@ spotless {
 
 configure<PitestPluginExtension> {
     mutators = listOf("STRONGER")
-    features = listOf("+GIT(from[HEAD~1])", "+gitci")
+    features = listOf("+GIT(from[HEAD~1])", "+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["base.package"]))
     outputFormats = listOf("XML", "GITCI")
     failWhenNoMutations = false
+    pitestGithub { deleteOldSummaries = true }
 }
 
 configurations {
@@ -132,7 +145,6 @@ tasks {
             clean,
             detekt,
             spotlessApply,
-            pitest,
             test,
         )
         finalizedBy(

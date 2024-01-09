@@ -8,8 +8,11 @@ quality-spotless = "6.23.3"
 quality-versions = "0.50.0"
 spring-boot = "3.2.1"
 spring-management = "1.1.4"
+test-archunit = "1.2.1"
 test-kotest = "5.8.0"
+test-kotest-arb = "2.1.2"
 test-kotest-pitest = "1.2.0"
+test-kotest-spring = "1.1.3"
 test-pitest = "1.15.0"
 test-pitest-git = "1.1.4"
 test-pitest-github = "1.0.7"
@@ -34,10 +37,14 @@ quality-detekt-plugin-style = { module = "io.gitlab.arturbosch.detekt:detekt-rul
 spring-boot-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
 spring-dev-tools = { module = "org.springframework.boot:spring-boot-devtools" }
+test-archunit-core = { module = "com.tngtech.archunit:archunit", version.ref = "test-archunit" }
+test-archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "test-archunit" }
+test-kotest-arb = { module = "io.kotest.extensions:kotest-property-arbs", version.ref = "test-kotest-arb" }
 test-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "test-kotest" }
 test-kotest-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "test-kotest" }
 test-kotest-pitest = { module = "io.kotest.extensions:kotest-extensions-pitest", version.ref = "test-kotest-pitest" }
 test-kotest-property = { module = "io.kotest:kotest-property", version.ref = "test-kotest" }
+test-kotest-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "test-kotest-spring" }
 test-pitest-git = { module = "com.groupcdg:pitest-git-plugin", version.ref = "test-pitest-git" }
 test-pitest-junit5 = { module = "org.pitest:pitest-junit5-plugin", version.ref = "test-pitest-junit5" }
 test-pitest-junit5-accelerator = { module = "com.groupcdg.pitest:pitest-accelerator-junit5", version.ref = "test-pitest-junit5-accelerator" }
@@ -77,11 +84,17 @@ quality-deteket = [
 spring-boot = [
     "spring-boot-starter",
 ]
+test-archunit = [
+    "test-archunit-core",
+    "test-archunit-junit5",
+]
 test-kotest = [
+    "test-kotest-arb",
     "test-kotest-assertions",
     "test-kotest-junit5",
     "test-kotest-pitest",
     "test-kotest-property",
+    "test-kotest-spring",
 ]
 test-pitest = [
     "test-pitest-git",
