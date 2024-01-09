@@ -1,0 +1,28 @@
+version: 2
+
+triggerPaths:
+  - "gradle.properties"
+  - "build.gradle.kts"
+  - "settings.gradle.kts"
+  - "buildSrc/build.gradle.kts"
+  - "gradle/libs.versions.toml"
+  - "gradle/wrapper/gradle-wrapper.properties"
+
+issueRules:
+  didYouMean: true
+  installScripts: true
+  telemetry: true
+  troll: true
+  malware: true
+  hasNativeCode: true
+  shellScriptOverride: true
+  gitDependency: true
+  httpDependency: true
+  invalidPackageJSON: true
+  unresolvedRequire: true
+
+githubApp:
+  enabled: true
+  pullRequestAlertsEnabled: true
+  dependencyOverviewEnabled: true
+  projectReportsEnabled: true
