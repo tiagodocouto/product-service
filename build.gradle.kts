@@ -117,16 +117,19 @@ spotless {
     }
 }
 
-allure { adapter { autoconfigure = false } }
+allure {
+    adapter { autoconfigure = false }
+    report { reportDir = project.buildFile("allure.output") }
+}
 
 sonar { properties { project.all("sonar", ::property) } }
 
 pitest {
-    mutators = listOf("STRONGER")
-    features = listOf("+GIT(from[HEAD~1])", "+GITCI")
+    mutators = listOf("STRONGER", "SPRING")
+    features = listOf("+GIT(from[develop])", "+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["base.package"]))
-    outputFormats = listOf("XML", "GITCI")
+    outputFormats = listOf("JSON", "XML", "GITCI")
     failWhenNoMutations = false
     pitestGithub { deleteOldSummaries = true }
 }
