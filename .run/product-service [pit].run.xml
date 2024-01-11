@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2023 Tiago do Couto.
+  ~ Copyright (c) 2024 Tiago do Couto.
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
   ~ and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,9 +19,8 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="product-service [pit]" type="PIT" factoryName="PIT Runner"
-                   REPORT_DIR="$PROJECT_DIR$/report" SOURCE_DIRS="$PROJECT_DIR$/src/main/kotlin"
-                   TARGET_CLASSES="dev.docouto.*" TARGET_TESTS="" otherParams="--outputFormats XML,HTML">
+    <configuration default="false" name="product-service [pit]" type="PIT" factoryName="PIT Runner" REPORT_DIR="$PROJECT_DIR$/build/reports/pitest" SOURCE_DIRS="$PROJECT_DIR$/src/main/kotlin" TARGET_CLASSES="dev.docouto.*"
+                   TARGET_TESTS="dev.docouto.*" otherParams="--outputFormats XML,HTML">
         <module name="product-service"/>
         <method v="2">
             <option name="Make" enabled="true"/>

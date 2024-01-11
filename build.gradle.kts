@@ -126,7 +126,7 @@ sonar { properties { project.all("sonar", ::property) } }
 
 pitest {
     mutators = listOf("STRONGER", "SPRING")
-    features = listOf("+GIT(from[develop])", "+GITCI")
+    features = listOf("+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["base.package"]))
     outputFormats = listOf("JSON", "XML", "GITCI")

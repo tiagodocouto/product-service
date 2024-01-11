@@ -43,19 +43,19 @@ jobs:
           arguments: check
 
       # UPLOAD RESULTS
-      - name: UPLOAD DETEKT RESULTS 📤
+      - name: ⏩ UPLOAD DETEKT RESULTS 📤
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/detekt.sarif
 
-      - name: UPLOAD CODECOV RESULTS 📤
+      - name: ⏩ UPLOAD CODECOV RESULTS 📤
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           file: ${{ github.workspace }}/.qodana/code-coverage/result.xml
 
-      - name: UPLOAD CODECLIMATE RESULTS 📤
+      - name: ⏩ UPLOAD CODECLIMATE RESULTS 📤
         uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -63,7 +63,7 @@ jobs:
         with:
           coverageLocations: ${{ github.workspace }}/.qodana/code-coverage/result.xml:jacoco
 
-      - name: UPLOAD DEPENDENCIES REPORT 📤
+      - name: ⏩ UPLOAD DEPENDENCIES REPORT 📤
         uses: mshick/add-pr-comment@v2
         with:
           refresh-message-position: true
@@ -77,13 +77,20 @@ jobs:
         with:
           arguments: pitest
 
-      - name: UPLOAD MUTATION TESTS RESULTS 📤
+      - name: ⏩ UPLOAD MUTATION TESTS RESULTS 📤
         uses: gradle/gradle-build-action@v2.4.2
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           arguments: pitest-github-upload
+
+      - name: ⏩ UPLOAD MUTATION TESTS ANNOTATION 📤
+        uses: johanholmerin/mutation-report-action@0.2.0
+        if: always()
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          report-json: ${{ github.workspace }}/build/reports/pitest/simplified.json
 
       # SONAR SCAN
       - name: SONAR SCAN 🕵🏻
@@ -109,7 +116,7 @@ jobs:
           pr-mode: false
           cache-default-branch-only: true
 
-      - name: UPLOAD QODANA RESULTS 📤
+      - name: ⏩ UPLOAD QODANA RESULTS 📤
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
