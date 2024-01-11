@@ -19,11 +19,11 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="product-service [pitest]" type="GradleRunConfiguration" factoryName="Gradle">
+    <configuration default="false" name="product-service [commit-check]" type="GradleRunConfiguration" factoryName="Gradle">
         <ExternalSystemSettings>
             <option name="env">
                 <map>
-                    <entry key="SPRING_PROFILES_ACTIVE" value="local,test,pitest"/>
+                    <entry key="SPRING_PROFILES_ACTIVE" value="local,test"/>
                 </map>
             </option>
             <option name="executionName"/>
@@ -36,16 +36,17 @@
             <option name="taskNames">
                 <list>
                     <option value=":clean"/>
+                    <option value=":versionCatalogUpdate"/>
                     <option value=":check"/>
                     <option value=":pitest"/>
                 </list>
             </option>
             <option name="vmOptions"/>
         </ExternalSystemSettings>
-        <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+        <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
         <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
         <DebugAllEnabled>false</DebugAllEnabled>
-        <RunAsTest>true</RunAsTest>
+        <RunAsTest>false</RunAsTest>
         <method v="2"/>
     </configuration>
 </component>

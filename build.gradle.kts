@@ -21,7 +21,6 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import info.solidsoft.gradle.pitest.PitestPluginExtension
 import info.solidsoft.gradle.pitest.PitestTask
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.getSupportedKotlinVersion
@@ -31,18 +30,23 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     // Project
     idea
+
     // Kotlin
     alias(libs.plugins.kotlin.jvm)
+
     // Spring
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.management)
+
     // Quality
     alias(libs.plugins.quality.versions)
     alias(libs.plugins.quality.catalog)
     alias(libs.plugins.quality.detekt)
     alias(libs.plugins.quality.spotless)
     alias(libs.plugins.quality.sonarqube)
+    alias(libs.plugins.quality.allure)
+
     // Test
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.test.pitest)
@@ -91,12 +95,6 @@ kover {
     }
 }
 
-sonar {
-    properties {
-        project.all("sonar", ::property)
-    }
-}
-
 spotless {
     kotlin {
         target("src/main/**/*.kt")
@@ -119,7 +117,11 @@ spotless {
     }
 }
 
-configure<PitestPluginExtension> {
+allure { adapter { autoconfigure = false } }
+
+sonar { properties { project.all("sonar", ::property) } }
+
+pitest {
     mutators = listOf("STRONGER")
     features = listOf("+GIT(from[HEAD~1])", "+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
@@ -149,6 +151,7 @@ tasks {
         )
         finalizedBy(
             koverXmlReport,
+            allureReport,
             dependencyUpdates,
         )
     }
@@ -170,14 +173,12 @@ tasks {
         }
 
     withType<DependencyUpdatesTask>()
-        .configureEach {
-            rejectVersionIf { candidate.version.isStable().not() }
-        }
+        .configureEach { rejectVersionIf { candidate.version.isStable().not() } }
 
     withType<PitestTask>()
-        .configureEach { dependsOn("arcmutateLicense") }
+        .configureEach { dependsOn("arcmutate-license") }
 
-    register<Download>("arcmutateLicense") {
+    register<Download>("arcmutate-license") {
         src(project["arcmutate.license"])
         dest(project.buildFile("arcmutate.output"))
         onlyIfModified(true)
