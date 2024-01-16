@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Tiago do Couto.
+ * Copyright (c) 2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,20 +18,23 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.productservice
+package dev.docouto.productservice.product.domain.document
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
-
-/**
- * The `ProductServiceApplication` class is the entry point for the application.
- */
-@SpringBootApplication
-class ProductServiceApplication
+import dev.docouto.productservice.base.domain.document.BaseDocument
+import org.springframework.data.mongodb.core.index.Indexed
+import org.springframework.data.mongodb.core.mapping.Document
 
 /**
- * The main method is the entry point for the application.
+ * Represents a [Product].
+ *
+ * @property externalId The unique external ID of the product.
+ * @property name The name of the product.
  */
-fun main() {
-    runApplication<ProductServiceApplication>()
+@Document
+class Product(
+    @Indexed(unique = true)
+    val externalId: String,
+    val name: String,
+) : BaseDocument() {
+    companion object
 }

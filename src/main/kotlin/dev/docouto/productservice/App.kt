@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tiago do Couto.
+ * Copyright (c) 2023-2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -20,20 +20,18 @@
 
 package dev.docouto.productservice
 
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+
 /**
- * Just a stub class for testing
+ * The `App` class is the entry point for the application.
  */
-object Dummy {
-    /**
-     * Determines if the given number is odd or even.
-     *
-     * @param number the number to be checked
-     * @return "even" if the number is even, "odd" if the number is odd
-     */
-    fun isOddOrEven(number: Int) =
-        if (number % 2 == 0) {
-            "even"
-        } else {
-            "odd"
-        }
+@SpringBootApplication
+class App
+
+/**
+ * The main method is the entry point for the application.
+ */
+fun main() {
+    runApplication<App>()
 }

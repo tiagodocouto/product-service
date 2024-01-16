@@ -1,4 +1,4 @@
-name: QUALITY CHECKS 🧪
+name: "QUALITY CHECKS 🧪"
 
 on:
   workflow_dispatch:
@@ -9,53 +9,58 @@ on:
 
 jobs:
   BUILD_TEST:
-    name: BUILD & TEST 🏗️
+    name: "BUILD & TEST 🏗️"
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       # SETUP
-      - name: CHECKOUT ⤵️
+      - name: "CHECKOUT ⤵️"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: INITIALIZE CODEQL 🤖
+      - name: "INITIALIZE CODEQL 🤖"
         uses: github/codeql-action/init@v3
         with:
           languages: java-kotlin
           tools: latest
 
-      - name: SETUP JDK 17 ☕️
+      - name: "SETUP JDK 17 ☕️"
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: SETUP GRADLE 📦
+      - name: "SETUP GRADLE 📦"
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: build --scan -x check
 
       # TESTS
-      - name: TESTS 🧪
+      #      - name: "SETUP TESTCONTAINERS 🐳"
+      #        uses: atomicjar/testcontainers-cloud-setup-action@v1
+      #        with:
+      #          token: ${{ secrets.TC_CLOUD_TOKEN }}
+
+      - name: "TESTS 🧪"
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: check
 
       # UPLOAD RESULTS
-      - name: UPLOAD DETEKT RESULTS 📤
+      - name: "⏩ UPLOAD DETEKT RESULTS 📤"
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ github.workspace }}/build/reports/detekt/detekt.sarif
 
-      - name: UPLOAD CODECOV RESULTS 📤
+      - name: "⏩ UPLOAD CODECOV RESULTS 📤"
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           file: ${{ github.workspace }}/.qodana/code-coverage/result.xml
 
-      - name: UPLOAD CODECLIMATE RESULTS 📤
+      - name: "⏩ UPLOAD CODECLIMATE RESULTS 📤"
         uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -63,21 +68,21 @@ jobs:
         with:
           coverageLocations: ${{ github.workspace }}/.qodana/code-coverage/result.xml:jacoco
 
-      - name: UPLOAD DEPENDENCIES REPORT 📤
+      - name: "⏩ UPLOAD DEPENDENCIES REPORT 📤"
         uses: mshick/add-pr-comment@v2
         with:
           refresh-message-position: true
           message-id: dependencyUpdates/report.txt
           message-path: ${{ github.workspace }}/build/dependencyUpdates/report.txt
 
-      - name: MUTATION TESTS 🧬
+      - name: "MUTATION TESTS 🧬"
         uses: gradle/gradle-build-action@v2.4.2
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           arguments: pitest
 
-      - name: UPLOAD MUTATION TESTS RESULTS 📤
+      - name: "⏩ UPLOAD MUTATION TESTS RESULTS 📤"
         uses: gradle/gradle-build-action@v2.4.2
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         env:
@@ -85,8 +90,15 @@ jobs:
         with:
           arguments: pitest-github-upload
 
+      - name: "⏩ UPLOAD MUTATION TESTS ANNOTATION 📤"
+        uses: johanholmerin/mutation-report-action@0.2.0
+        if: always()
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          report-json: ${{ github.workspace }}/build/reports/pitest/simplified.json
+
       # SONAR SCAN
-      - name: SONAR SCAN 🕵🏻
+      - name: "SONAR SCAN 🕵🏻"
         uses: gradle/gradle-build-action@v2.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,13 +107,13 @@ jobs:
           arguments: sonar
 
       # ANALYSIS
-      - name: CODEQL ANALYSIS 🕵🏻
+      - name: "CODEQL ANALYSIS 🕵🏻"
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java-kotlin"
 
       # QODANA
-      - name: QODANA SCAN 🧙🏻
+      - name: "QODANA SCAN 🧙🏻"
         uses: JetBrains/qodana-action@v2023.3
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
@@ -109,18 +121,18 @@ jobs:
           pr-mode: false
           cache-default-branch-only: true
 
-      - name: UPLOAD QODANA RESULTS 📤
+      - name: "⏩ UPLOAD QODANA RESULTS 📤"
         uses: github/codeql-action/upload-sarif@v2
         if: success() || failure()
         with:
           sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
 
       # ARCHIVE REPORTS
-      - name: ARCHIVE REPORTS 📦
+      - name: "ARCHIVE REPORTS 📦"
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: reports.zip
+          name: "reports.zip"
           path: |
             ${{ runner.temp }}/qodana/results/qodana.sarif.json
             ${{ github.workspace }}/.qodana/code-coverage

@@ -18,19 +18,11 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.productservice
+package dev.docouto.helpers.config
 
-import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.matchers.shouldBe
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.extensions.allure.AllureTestReporter
 
-class DummyTests : AnnotationSpec() {
-    @Test
-    fun `is odd`() {
-        Dummy.isOddOrEven(1) shouldBe "odd"
-    }
-
-    @Test
-    fun `is even`() {
-        Dummy.isOddOrEven(2) shouldBe "even"
-    }
+object KotestProjectConfig : AbstractProjectConfig() {
+    override fun extensions() = listOf(AllureTestReporter())
 }

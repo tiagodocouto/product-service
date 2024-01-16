@@ -33,7 +33,7 @@ private val stableRegex = "^[0-9,.v-]+(-r)?$".toRegex()
  */
 fun String.isStable(): Boolean =
     stableKeywords.any { this.uppercase().contains(it) }
-            || stableRegex.matches(this)
+        || stableRegex.matches(this)
 
 /**
  * Applies a resolution strategy to each dependency for `Kotlin` related dependencies.
@@ -66,7 +66,7 @@ operator fun Project.get(name: String): String =
  * @param block the lambda to be executed on each element of the array
  */
 operator fun String.invoke(block: (String) -> Unit) =
-    array().map(block)
+    array(block)
 
 /**
  * Filters and maps properties of the project that have keys starting with "project." followed by the given [name].
@@ -99,6 +99,17 @@ fun Project.rootFile(name: String): File =
     layout.projectDirectory.file(properties(name)).asFile
 
 /**
+ * Splits the string into a list of strings using comma as a delimiter,
+ *
+ * @return The mutable list of non-blank strings.
+ */
+fun String.array(block: (String) -> Unit = {}): MutableList<String> =
+    split(",")
+        .filter { it.isNotBlank() }
+        .toMutableList()
+        .also { it.forEach(block) }
+
+/**
  * Extracts the value of the current object, assuming it is a string.
  * If the string ends with a comma, it is parsed as an array of values.
  * Otherwise, it is returned as is.
@@ -110,16 +121,6 @@ private fun Any?.extract(): Any =
         if (it.endsWith(",")) it.array()
         else it
     }
-
-/**
- * Splits the string into a list of strings using comma as a delimiter,
- *
- * @return The mutable list of non-blank strings.
- */
-private fun String.array(): MutableList<String> =
-    split(",")
-        .filter { it.isNotBlank() }
-        .toMutableList()
 
 /**
  * Returns the value of the property with the given project.[name] from this [Project].

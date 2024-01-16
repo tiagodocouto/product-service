@@ -72,6 +72,8 @@ dependencies {
     testImplementation(libs.bundles.test.spring.boot)
     testImplementation(libs.bundles.test.archunit)
     testImplementation(libs.bundles.test.kotest)
+    testImplementation(libs.bundles.test.testcontainers)
+    testImplementation(libs.bundles.test.helpers)
 
     // Quality
     detektPlugins(libs.bundles.quality.deteket)
@@ -87,7 +89,7 @@ kover {
     koverReport {
         filters {
             includes { project["base.package"](::classes) }
-            excludes { project["kover.exclude"](::classes) }
+            excludes { project["kover.excludes"].array(::classes) }
         }
         defaults {
             xml { setReportFile(project.rootFile("kover.output")) }
@@ -117,13 +119,16 @@ spotless {
     }
 }
 
-allure { adapter { autoconfigure = false } }
+allure {
+    adapter { autoconfigure = false }
+    report { reportDir = project.buildFile("allure.output") }
+}
 
 sonar { properties { project.all("sonar", ::property) } }
 
 pitest {
-    mutators = listOf("STRONGER")
-    features = listOf("+GIT(from[HEAD~1])", "+GITCI")
+    mutators = listOf("STRONGER", "SPRING")
+    features = listOf("+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["base.package"]))
     outputFormats = listOf("XML", "GITCI")
@@ -133,8 +138,8 @@ pitest {
 
 configurations {
     developmentOnly
-    runtimeClasspath { extendsFrom(configurations.developmentOnly.get()) }
     compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
+    runtimeClasspath { extendsFrom(configurations.developmentOnly.get()) }
 }.matching { it.name == "detekt" }.all {
     resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
 }
@@ -168,8 +173,8 @@ tasks {
         .configureEach {
             allRules = true
             buildUponDefaultConfig = true
+            reports.sarif.required = true
             config.setFrom("$rootDir/detekt.yml")
-            reports { sarif.required.set(true) }
         }
 
     withType<DependencyUpdatesTask>()
@@ -184,4 +189,9 @@ tasks {
         onlyIfModified(true)
         overwrite(true)
     }
+}
+
+gradle.taskGraph.whenReady {
+    exec { commandLine("cp", "-R", "./.scripts/", "./.git/hooks") }
+    logger.warn("✅ Updated Git hooks.")
 }

@@ -29,7 +29,7 @@
             <option name="executionName"/>
             <option name="externalProjectPath" value="$PROJECT_DIR$"/>
             <option name="externalSystemIdString" value="GRADLE"/>
-            <option name="scriptParameters" value="--no-build-cache"/>
+            <option name="scriptParameters" value="--no-build-cache --rerun-tasks"/>
             <option name="taskDescriptions">
                 <list/>
             </option>
@@ -38,7 +38,6 @@
                     <option value=":clean"/>
                     <option value=":versionCatalogUpdate"/>
                     <option value=":check"/>
-                    <option value=":pitest"/>
                 </list>
             </option>
             <option name="vmOptions"/>

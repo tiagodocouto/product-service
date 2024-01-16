@@ -18,23 +18,52 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.helpers.specs
+package dev.docouto.productservice.base.domain.document
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.IsolationMode.InstancePerTest
-import io.kotest.core.spec.style.AnnotationSpec
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.annotation.Version
+import org.springframework.data.mongodb.core.mapping.Document
+import java.time.Instant
 
 /**
- * [TestSpec]
- * This class wraps a few extra things on top of [Kotest AnnotationSpec][AnnotationSpec]
+ * Defines default and audit properties for Documents
+ * others documents should inherit from this
  *
- * @see AnnotationSpec
+ * @see Document
+ *
+ * ```kotlin
+ * @Document
+ * data class SomeDocument(
+ *     val someProperty: String,
+ * ) : BaseDocument() {
+ *     companion object
+ * }
+ * ```
  */
-@OptIn(ExperimentalKotest::class)
-abstract class TestSpec : AnnotationSpec() {
-    init {
-        threads = 10
-        concurrency = 10
-        isolationMode = InstancePerTest
-    }
+open class BaseDocument {
+    /**
+     * document ID property
+     */
+    @Id
+    lateinit var id: String
+
+    /**
+     * document creation time
+     */
+    @CreatedDate
+    lateinit var createdAt: Instant
+
+    /**
+     * document update time
+     */
+    @LastModifiedDate
+    lateinit var updatedAt: Instant
+
+    /**
+     * document version
+     */
+    @Version
+    lateinit var version: String
 }
