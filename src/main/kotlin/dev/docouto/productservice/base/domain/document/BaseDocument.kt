@@ -18,11 +18,52 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.helpers.configs
+package dev.docouto.productservice.base.domain.document
 
-import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.extensions.allure.AllureTestReporter
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.annotation.Version
+import org.springframework.data.mongodb.core.mapping.Document
+import java.time.Instant
 
-object KotestProjectConfig : AbstractProjectConfig() {
-    override fun extensions() = listOf(AllureTestReporter())
+/**
+ * Defines default and audit properties for Documents
+ * others documents should inherit from this
+ *
+ * @see Document
+ *
+ * ```kotlin
+ * @Document
+ * data class SomeDocument(
+ *     val someProperty: String,
+ * ) : BaseDocument() {
+ *     companion object
+ * }
+ * ```
+ */
+open class BaseDocument {
+    /**
+     * document ID property
+     */
+    @Id
+    lateinit var id: String
+
+    /**
+     * document creation time
+     */
+    @CreatedDate
+    lateinit var createdAt: Instant
+
+    /**
+     * document update time
+     */
+    @LastModifiedDate
+    lateinit var updatedAt: Instant
+
+    /**
+     * document version
+     */
+    @Version
+    lateinit var version: String
 }

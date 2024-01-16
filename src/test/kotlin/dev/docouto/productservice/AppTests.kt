@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tiago do Couto.
+ * Copyright (c) 2023-2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,23 +18,16 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.helpers.specs
+package dev.docouto.productservice
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.spec.IsolationMode.InstancePerTest
-import io.kotest.core.spec.style.AnnotationSpec
+import dev.docouto.helpers.context.IntegrationTestContext
+import dev.docouto.helpers.spec.IntegrationTestSpec
+import io.kotest.matchers.shouldBe
 
-/**
- * [TestSpec]
- * This class wraps a few extra things on top of [Kotest AnnotationSpec][AnnotationSpec]
- *
- * @see AnnotationSpec
- */
-@OptIn(ExperimentalKotest::class)
-abstract class TestSpec : AnnotationSpec() {
-    init {
-        threads = 10
-        concurrency = 10
-        isolationMode = InstancePerTest
+@IntegrationTestContext
+class AppTests : IntegrationTestSpec() {
+    @Test
+    fun `happy day`() {
+        1 shouldBe 1
     }
 }

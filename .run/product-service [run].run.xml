@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2023 Tiago do Couto.
+  ~ Copyright (c) 2024 Tiago do Couto.
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
   ~ and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -19,11 +19,10 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="product-service [run]" type="SpringBootApplicationConfigurationType"
-                   factoryName="Spring Boot">
+    <configuration default="false" name="product-service [run]" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
         <option name="ACTIVE_PROFILES" value="local,dev"/>
         <module name="product-service.main"/>
-        <option name="SPRING_BOOT_MAIN_CLASS" value="dev.docouto.productservice.ProductServiceApplication"/>
+        <option name="SPRING_BOOT_MAIN_CLASS" value="dev.docouto.productservice.App"/>
         <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
             <option name="credential"/>
             <option name="region"/>

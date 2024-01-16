@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Tiago do Couto.
+ * Copyright (c) 2024 Tiago do Couto.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -18,14 +18,30 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.productservice
+package dev.docouto.productservice.product.domain.document
 
-import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.matchers.shouldBe
+import dev.docouto.helpers.extension.FakerExtensions.faker
+import dev.docouto.helpers.extension.FakerExtensions.name
+import dev.docouto.helpers.extension.FakerExtensions.uuid
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.arbitrary
 
-class ProductServiceApplicationTests : AnnotationSpec() {
-    @Test
-    fun `happy day`() {
-        1 shouldBe 1
-    }
+/**
+ * A class that provides a fixture for generating arbitrary instances of the [Product] class.
+ *
+ * @see Product
+ */
+object ProductFixture {
+    /**
+     * Generates an arbitrary instance of [Product] with random data.
+     *
+     * @return An [Arb] instance of [Product].
+     */
+    val Product.Companion.arbitrary: Arb<Product>
+        get() = arbitrary {
+            Product(
+                externalId = faker.uuid(),
+                name = faker.name(),
+            )
+        }
 }

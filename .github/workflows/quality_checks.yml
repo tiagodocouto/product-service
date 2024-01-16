@@ -37,6 +37,11 @@ jobs:
           arguments: build --scan -x check
 
       # TESTS
+      #      - name: "SETUP TESTCONTAINERS 🐳"
+      #        uses: atomicjar/testcontainers-cloud-setup-action@v1
+      #        with:
+      #          token: ${{ secrets.TC_CLOUD_TOKEN }}
+
       - name: "TESTS 🧪"
         uses: gradle/gradle-build-action@v2.4.2
         with:

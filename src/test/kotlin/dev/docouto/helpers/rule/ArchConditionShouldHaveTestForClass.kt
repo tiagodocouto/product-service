@@ -18,18 +18,22 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.helpers.rules
+package dev.docouto.helpers.rule
 
 import com.tngtech.archunit.core.domain.JavaClass
+import com.tngtech.archunit.core.domain.Source
 import com.tngtech.archunit.lang.ArchCondition
 import com.tngtech.archunit.lang.ConditionEvents
 import com.tngtech.archunit.lang.SimpleConditionEvent.violated
 import dev.docouto.helpers.extension.ListExtensions.isMissing
+import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 private const val SUFFIX_TEST = "Tests"
 private const val SUFFIX_KT = "Kt"
 private const val SUFFIX_EXTENSION = "Extensions"
 private const val SUFFIX_EXCEPTION = "Exception"
+private const val TEST_BUILD_PATH = "build/classes/kotlin/test/"
 private const val IS_ANONYMOUS_CLASS = "$"
 typealias TestClassesBySimpleClassName = Map<String, List<JavaClass>>
 
@@ -60,8 +64,17 @@ object ArchConditionShouldHaveTestForClass : ArchCondition<JavaClass>("should ha
             simpleName.endsWith(SUFFIX_EXTENSION) ||
             simpleName.endsWith(SUFFIX_EXCEPTION) ||
             name.contains(IS_ANONYMOUS_CLASS) ||
+            source.isTestSource ||
             isInterface ||
             isAnonymousClass
+
+    /**
+     * Determines whether the given optional source is a test source.
+     *
+     * @return true if the source is a test source, false otherwise.
+     */
+    private val Optional<Source>.isTestSource: Boolean
+        get() = getOrNull()?.uri?.path?.contains(TEST_BUILD_PATH) ?: false
 
     /**
      * Initializes the testing process.

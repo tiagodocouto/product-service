@@ -18,19 +18,23 @@
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.docouto.productservice
+package dev.docouto.helpers.spec
 
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.spec.IsolationMode.InstancePerTest
 import io.kotest.core.spec.style.AnnotationSpec
-import io.kotest.matchers.shouldBe
 
-class DummyTests : AnnotationSpec() {
-    @Test
-    fun `is odd`() {
-        Dummy.isOddOrEven(1) shouldBe "odd"
-    }
-
-    @Test
-    fun `is even`() {
-        Dummy.isOddOrEven(2) shouldBe "even"
+/**
+ * [TestSpec]
+ * This class wraps a few extra things on top of [Kotest AnnotationSpec][AnnotationSpec]
+ *
+ * @see AnnotationSpec
+ */
+@OptIn(ExperimentalKotest::class)
+abstract class TestSpec : AnnotationSpec() {
+    init {
+        threads = 10
+        concurrency = 10
+        isolationMode = InstancePerTest
     }
 }

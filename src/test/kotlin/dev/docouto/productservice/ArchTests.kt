@@ -26,8 +26,8 @@ import com.tngtech.archunit.lang.ArchRule
 import com.tngtech.archunit.lang.Priority
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition
 import com.tngtech.archunit.library.GeneralCodingRules
-import dev.docouto.helpers.rules.ArchConditionShouldHaveTestForClass
-import dev.docouto.helpers.specs.TestSpec
+import dev.docouto.helpers.rule.ArchConditionShouldHaveTestForClass
+import dev.docouto.helpers.spec.TestSpec
 
 private const val SUFFIX_EXCEPTION = "Exception"
 

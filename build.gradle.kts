@@ -72,6 +72,8 @@ dependencies {
     testImplementation(libs.bundles.test.spring.boot)
     testImplementation(libs.bundles.test.archunit)
     testImplementation(libs.bundles.test.kotest)
+    testImplementation(libs.bundles.test.testcontainers)
+    testImplementation(libs.bundles.test.helpers)
 
     // Quality
     detektPlugins(libs.bundles.quality.deteket)
@@ -87,7 +89,7 @@ kover {
     koverReport {
         filters {
             includes { project["base.package"](::classes) }
-            excludes { project["kover.exclude"](::classes) }
+            excludes { project["kover.excludes"].array(::classes) }
         }
         defaults {
             xml { setReportFile(project.rootFile("kover.output")) }
@@ -171,8 +173,8 @@ tasks {
         .configureEach {
             allRules = true
             buildUponDefaultConfig = true
+            reports.sarif.required = true
             config.setFrom("$rootDir/detekt.yml")
-            reports { sarif.required.set(true) }
         }
 
     withType<DependencyUpdatesTask>()
@@ -191,5 +193,5 @@ tasks {
 
 gradle.taskGraph.whenReady {
     exec { commandLine("cp", "-R", "./.scripts/", "./.git/hooks") }
-    logger.warn("✅ Added Git hooks.")
+    logger.warn("✅ Updated Git hooks.")
 }
