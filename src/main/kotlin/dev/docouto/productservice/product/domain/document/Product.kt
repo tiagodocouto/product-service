@@ -31,7 +31,7 @@ import org.springframework.data.mongodb.core.mapping.Document
  * @property name The name of the product.
  */
 @Document
-data class Product(
+class Product(
     @Indexed(unique = true)
     val externalId: String,
     val name: String,
