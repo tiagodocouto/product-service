@@ -188,3 +188,8 @@ tasks {
         overwrite(true)
     }
 }
+
+gradle.taskGraph.whenReady {
+    exec { commandLine("cp", "-R", "./.scripts/", "./.git/hooks") }
+    logger.warn("✅ Added Git hooks.")
+}
