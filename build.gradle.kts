@@ -129,15 +129,15 @@ pitest {
     features = listOf("+GITCI")
     threads = Runtime.getRuntime().availableProcessors()
     targetClasses.set(listOf(project["base.package"]))
-    outputFormats = listOf("JSON", "XML", "GITCI")
+    outputFormats = listOf("XML", "GITCI")
     failWhenNoMutations = false
     pitestGithub { deleteOldSummaries = true }
 }
 
 configurations {
     developmentOnly
-    runtimeClasspath { extendsFrom(configurations.developmentOnly.get()) }
     compileOnly { extendsFrom(configurations.annotationProcessor.get()) }
+    runtimeClasspath { extendsFrom(configurations.developmentOnly.get()) }
 }.matching { it.name == "detekt" }.all {
     resolutionStrategy.kotlin { useVersion(getSupportedKotlinVersion()) }
 }
